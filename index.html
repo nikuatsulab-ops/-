@@ -12,7 +12,7 @@ html,body{height:100%;overflow:hidden}
 #uiFunds{white-space:nowrap}
 #uiLaia{position:absolute;top:calc(58px + var(--sat));right:8px;width:66px;height:66px;display:flex;align-items:center;justify-content:center}
 #uiLaia img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(69,61,53,.35))}
-#uiDock{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(6px + var(--sab));background:transparent;display:flex;padding:0 4px;gap:2px;box-shadow:none}
+#uiDock{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(16px + var(--sab));background:transparent;display:flex;padding:0 4px;gap:2px;box-shadow:none}
 .uiItem{display:flex;align-items:flex-end;min-width:0}
 .uiItem img{height:80px;width:auto;display:block;filter:drop-shadow(0 2px 5px rgba(69,61,53,.30))}
 .uiItem i{font-style:normal;font-size:16px;line-height:1}
@@ -32,7 +32,7 @@ html,body{height:100%;overflow:hidden}
 #editMenu{position:absolute;left:8px;top:calc(112px + var(--sat));display:none;flex-direction:column;gap:8px;pointer-events:none}
 .editToolBtn{width:58px;height:58px;min-height:58px;border-radius:50%;background:rgba(255,255,255,.93);box-shadow:0 2px 8px rgba(69,61,53,.20);font-size:13px;font-weight:700;padding:0;pointer-events:auto;color:#453d35}
 .editToolBtn.on{background:#83b79a;color:#fff}
-#devToggle{position:fixed;left:auto;right:8px;bottom:calc(102px + env(safe-area-inset-bottom,0px));z-index:41;background:rgba(255,255,255,.85);border-radius:999px;padding:7px 12px;font-size:12px;min-height:36px;box-shadow:0 2px 6px rgba(69,61,53,.25)}
+#devToggle{position:fixed;left:auto;right:8px;bottom:calc(112px + env(safe-area-inset-bottom,0px));z-index:41;background:rgba(255,255,255,.85);border-radius:999px;padding:7px 12px;font-size:12px;min-height:36px;box-shadow:0 2px 6px rgba(69,61,53,.25)}
 #devPanel{position:fixed;left:0;right:0;bottom:0;max-height:62dvh;overflow-y:auto;background:#f5efe5;z-index:40;display:none;box-shadow:0 -4px 16px rgba(0,0,0,.25)}
 #devPanel.open{display:block}
 #palette{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(58px + env(safe-area-inset-bottom,0px));z-index:30;background:rgba(250,245,237,.96);border-radius:14px;box-shadow:0 2px 8px rgba(69,61,53,.22);display:none;max-width:97vw}
