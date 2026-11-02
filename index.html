@@ -77,14 +77,15 @@ let curChara='nemu';
 const sheets={},sheetReady={};
 for(const k of CHARAS){const im=new Image();sheetReady[k]=false;im.onload=()=>{sheetReady[k]=true;draw()};im.onerror=()=>{sheetReady[k]=false};im.src=SHEET_DATA[k];sheets[k]=im}
 const NPC_SPOTS=[[3,1],[5,1],[11,3]];
+const CHARA_SCALE=1.5;
 let npcMap={};
 function resetNpc(){npcMap={};let i=0;for(const k of CHARAS){if(k!==curChara)npcMap[k]=i++}}
 resetNpc();
 function setChara(k){if(k===curChara||!sheets[k])return;const spot=npcMap[k];if(spot!==undefined){npcMap[curChara]=spot;delete npcMap[k]}curChara=k;document.querySelectorAll('.charaBtn').forEach(b=>b.classList.toggle('active',b.dataset.chara===k));draw()}
 document.querySelectorAll('.charaBtn').forEach(b=>b.addEventListener('click',()=>setChara(b.dataset.chara)));
-function drawNpc(k,tw,ox,oy){const sp=NPC_SPOTS[npcMap[k]];if(!sp)return;const fx=ox+(sp[0]+0.5)*tw,fy=oy+(sp[1]+1)*tw;ctx.fillStyle='rgba(69,53,43,.25)';ctx.beginPath();ctx.ellipse(fx,fy,tw*.24,tw*.09,0,0,Math.PI*2);ctx.fill();if(sheetReady[k]){ctx.imageSmoothingEnabled=true;ctx.drawImage(sheets[k],144,0,144,144,Math.round(fx-tw/2),Math.round(fy-tw*0.978),tw,tw);ctx.imageSmoothingEnabled=false}}
+function drawNpc(k,tw,ox,oy){const sp=NPC_SPOTS[npcMap[k]];if(!sp)return;const fx=ox+(sp[0]+0.5)*tw,fy=oy+(sp[1]+1)*tw;ctx.fillStyle='rgba(69,53,43,.25)';ctx.beginPath();ctx.ellipse(fx,fy,tw*.24,tw*.09,0,0,Math.PI*2);ctx.fill();if(sheetReady[k]){ctx.imageSmoothingEnabled=true;ctx.drawImage(sheets[k],144,0,144,144,Math.round(fx-tw*CHARA_SCALE/2),Math.round(fy-tw*0.978*CHARA_SCALE),tw*CHARA_SCALE,tw*CHARA_SCALE);ctx.imageSmoothingEnabled=false}}
 function drawPlayer(tw,ox,oy){const s=tw/T,fx=ox+px*s,fy=oy+py*s;ctx.fillStyle='rgba(69,53,43,.25)';ctx.beginPath();ctx.ellipse(fx,fy,tw*.24,tw*.09,0,0,Math.PI*2);ctx.fill();
-if(sheetReady[curChara]){const row=ROW_OF[state.player.dir]||0,col=frameCol();ctx.imageSmoothingEnabled=true;ctx.drawImage(sheets[curChara],col*144,row*144,144,144,Math.round(fx-tw/2),Math.round(fy-tw*0.978),tw,tw);ctx.imageSmoothingEnabled=false;return}
+if(sheetReady[curChara]){const row=ROW_OF[state.player.dir]||0,col=frameCol();ctx.imageSmoothingEnabled=true;ctx.drawImage(sheets[curChara],col*144,row*144,144,144,Math.round(fx-tw*CHARA_SCALE/2),Math.round(fy-tw*0.978*CHARA_SCALE),tw*CHARA_SCALE,tw*CHARA_SCALE);ctx.imageSmoothingEnabled=false;return}
 const p=state.player,cxp=fx,cyp=fy-tw*.34;ctx.fillStyle='#6c86aa';rr(cxp-tw*.21,cyp+tw*.02,tw*.42,tw*.32,tw*.1);ctx.fill();ctx.fillStyle='#f3d4b7';ctx.beginPath();ctx.arc(cxp,cyp-tw*.14,tw*.21,0,Math.PI*2);ctx.fill();ctx.fillStyle='#4a3b32';ctx.beginPath();ctx.arc(cxp,cyp-tw*.2,tw*.21,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle='#333';const eo={up:[0,-.02],down:[0,.03],left:[-.05,0],right:[.05,0]}[p.dir]||[0,.03];if(p.dir!=='up'){ctx.beginPath();ctx.arc(cxp-tw*.08+eo[0]*tw,cyp-tw*.12+eo[1]*tw,tw*.028,0,Math.PI*2);ctx.arc(cxp+tw*.08+eo[0]*tw,cyp-tw*.12+eo[1]*tw,tw*.028,0,Math.PI*2);ctx.fill()}}
 /* ===== プレイヤー移動（滑らか移動＋経路探索） ===== */
 function tileWalkable(x,y){return x>=0&&y>=0&&x<W&&y<H&&!state.items.some(o=>!TYPES[o.type].pass&&x>=o.x&&x<o.x+footprint(o).w&&y>=o.y&&y<o.y+footprint(o).h)}
