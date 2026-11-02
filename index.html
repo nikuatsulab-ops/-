@@ -62,7 +62,7 @@ const save=()=>{try{localStorage.setItem(KEY3,JSON.stringify(state))}catch(e){}}
 save();
 /* プレイヤーのピクセル位置（滑らか移動用） */
 let px=0,py=0,moving=false,animT=0,sitExempt=null;const feetOf=(tx,ty)=>({x:(tx+.5)*T,y:(ty+.82)*T});{const f=feetOf(state.player.x,state.player.y);px=f.x;py=f.y}
-if(feetBlocked(px,py)){const bo=state.items.find(o=>!TYPES[o.type].pass&&state.player.x>=o.x&&state.player.x<o.x+footprint(o).w&&state.player.y>=o.y&&state.player.y<o.y+footprint(o).h);if(bo){const f2=feetOf(bo.x,Math.min(H-1,bo.y+footprint(bo).h));px=f2.x;py=f2.y;syncPlayerTile()}}
+if(feetBlocked(px,py)){const bo=state.items.find(o=>{if(TYPES[o.type].pass)return false;const ow=o.rot%2?TYPES[o.type].h:TYPES[o.type].w,oh=o.rot%2?TYPES[o.type].w:TYPES[o.type].h;return state.player.x>=o.x&&state.player.x<o.x+ow&&state.player.y>=o.y&&state.player.y<o.y+oh});if(bo){const bh=bo.rot%2?TYPES[bo.type].w:TYPES[bo.type].h;const f2=feetOf(bo.x,Math.min(H-1,bo.y+bh));px=f2.x;py=f2.y;syncPlayerTile()}}
 /* 取り消し履歴 */
 const history=[];const snapshot=()=>{history.push(JSON.stringify({items:state.items,floor:state.floor,wall:state.wall,player:state.player,nextId:state.nextId}));if(history.length>40)history.shift();updUndo()};
 /* ===== DOM ===== */
@@ -202,7 +202,7 @@ document.getElementById('walk').onclick=()=>setMode('walk');
 document.getElementById('rotate').onclick=()=>{const o=state.items.find(v=>v.id===selected);if(!o)return msg('先に家具を選択してください');rotateItem(o)};
 document.getElementById('remove').onclick=()=>{const o=state.items.find(v=>v.id===selected);if(!o)return msg('先に家具を選択してください');storeItem(o)};
 document.getElementById('undo').onclick=()=>{const s=history.pop();if(!s)return;const prev=JSON.parse(s);state.items=prev.items;state.floor=prev.floor;state.wall=prev.wall;state.player=prev.player;state.nextId=prev.nextId;tapTarget=null;moving=false;{const f=feetOf(state.player.x,state.player.y);px=f.x;py=f.y}
-if(feetBlocked(px,py)){const bo=state.items.find(o=>!TYPES[o.type].pass&&state.player.x>=o.x&&state.player.x<o.x+footprint(o).w&&state.player.y>=o.y&&state.player.y<o.y+footprint(o).h);if(bo){const f2=feetOf(bo.x,Math.min(H-1,bo.y+footprint(bo).h));px=f2.x;py=f2.y;syncPlayerTile()}}selected=null;document.getElementById('floor').value=state.floor;document.getElementById('wall').value=state.wall;save();updUndo();draw();msg('一つ前に戻しました')};
+if(feetBlocked(px,py)){const bo=state.items.find(o=>{if(TYPES[o.type].pass)return false;const ow=o.rot%2?TYPES[o.type].h:TYPES[o.type].w,oh=o.rot%2?TYPES[o.type].w:TYPES[o.type].h;return state.player.x>=o.x&&state.player.x<o.x+ow&&state.player.y>=o.y&&state.player.y<o.y+oh});if(bo){const bh=bo.rot%2?TYPES[bo.type].w:TYPES[bo.type].h;const f2=feetOf(bo.x,Math.min(H-1,bo.y+bh));px=f2.x;py=f2.y;syncPlayerTile()}}selected=null;document.getElementById('floor').value=state.floor;document.getElementById('wall').value=state.wall;save();updUndo();draw();msg('一つ前に戻しました')};
 document.getElementById('zoomIn').onclick=()=>{const r=c.getBoundingClientRect();zoomAt(r.left+r.width/2,r.top+r.height/2,1.25)};
 document.getElementById('zoomOut').onclick=()=>{const r=c.getBoundingClientRect();zoomAt(r.left+r.width/2,r.top+r.height/2,0.8)};
 const floorSel=document.getElementById('floor');floorSel.value=state.floor;floorSel.onchange=e=>{snapshot();state.floor=e.target.value;save();draw()};
@@ -212,7 +212,7 @@ document.getElementById('exportBtn').onclick=()=>{const blob=new Blob([JSON.stri
 const importFile=document.getElementById('importFile');
 document.getElementById('importBtn').onclick=()=>importFile.click();
 importFile.onchange=()=>{const f=importFile.files&&importFile.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const rawJ=JSON.parse(rd.result);const s=sanitize(rawJ,(rawJ&&rawJ.version>=3)?0:1,0);if(!s){msg('読み込めない形式のファイルです');return}snapshot();state=s;selected=null;tapTarget=null;moving=false;{const f=feetOf(state.player.x,state.player.y);px=f.x;py=f.y}
-if(feetBlocked(px,py)){const bo=state.items.find(o=>!TYPES[o.type].pass&&state.player.x>=o.x&&state.player.x<o.x+footprint(o).w&&state.player.y>=o.y&&state.player.y<o.y+footprint(o).h);if(bo){const f2=feetOf(bo.x,Math.min(H-1,bo.y+footprint(bo).h));px=f2.x;py=f2.y;syncPlayerTile()}}floorSel.value=state.floor;wallSel.value=state.wall;save();draw();msg('セーブデータを読み込みました')}catch(e){msg('読み込みに失敗しました')}};rd.readAsText(f);importFile.value=''};
+if(feetBlocked(px,py)){const bo=state.items.find(o=>{if(TYPES[o.type].pass)return false;const ow=o.rot%2?TYPES[o.type].h:TYPES[o.type].w,oh=o.rot%2?TYPES[o.type].w:TYPES[o.type].h;return state.player.x>=o.x&&state.player.x<o.x+ow&&state.player.y>=o.y&&state.player.y<o.y+oh});if(bo){const bh=bo.rot%2?TYPES[bo.type].w:TYPES[bo.type].h;const f2=feetOf(bo.x,Math.min(H-1,bo.y+bh));px=f2.x;py=f2.y;syncPlayerTile()}}floorSel.value=state.floor;wallSel.value=state.wall;save();draw();msg('セーブデータを読み込みました')}catch(e){msg('読み込みに失敗しました')}};rd.readAsText(f);importFile.value=''};
 
 const KEYMAP={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
 window.addEventListener('keydown',e=>{if(mode!=='walk')return;if(KEYMAP[e.key]){e.preventDefault();held.add(KEYMAP[e.key])}});
