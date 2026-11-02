@@ -141,7 +141,7 @@ function drawPlayer(tw,ox,oy){const s=tw/T,fx=ox+px*s,fy=oy+py*s,sitOff=sitting?
 if(sheetReady[curChara]){const row=ROW_OF[state.player.dir]||0,col=frameCol();ctx.imageSmoothingEnabled=true;ctx.drawImage(sheets[curChara],col*144,row*144,144,144,Math.round(fx-tw*CHARA_SCALE/2),Math.round(fy-sitOff-tw*0.978*CHARA_SCALE),tw*CHARA_SCALE,tw*CHARA_SCALE);ctx.imageSmoothingEnabled=false;return}
 const p=state.player,cxp=fx,cyp=fy-tw*.34;ctx.fillStyle='#6c86aa';rr(cxp-tw*.21,cyp+tw*.02,tw*.42,tw*.32,tw*.1);ctx.fill();ctx.fillStyle='#f3d4b7';ctx.beginPath();ctx.arc(cxp,cyp-tw*.14,tw*.21,0,Math.PI*2);ctx.fill();ctx.fillStyle='#4a3b32';ctx.beginPath();ctx.arc(cxp,cyp-tw*.2,tw*.21,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle='#333';const eo={up:[0,-.02],down:[0,.03],left:[-.05,0],right:[.05,0]}[p.dir]||[0,.03];if(p.dir!=='up'){ctx.beginPath();ctx.arc(cxp-tw*.08+eo[0]*tw,cyp-tw*.12+eo[1]*tw,tw*.028,0,Math.PI*2);ctx.arc(cxp+tw*.08+eo[0]*tw,cyp-tw*.12+eo[1]*tw,tw*.028,0,Math.PI*2);ctx.fill()}}
 /* ===== プレイヤー移動（滑らか移動＋経路探索） ===== */
-function tileWalkable(x,y){return x>=0&&y>=0&&x<W&&y<H&&!state.items.some(o=>o.id!==sitExempt&&!TYPES[o.type].pass&&x>=o.x&&x<o.x+footprint(o).w&&y>=o.y&&y<o.y+footprint(o).h)}
+function tileWalkable(x,y){return x>=0&&y>=0&&x<W&&y<H&&!state.items.some(o=>{if(o.id===sitExempt||TYPES[o.type].pass)return false;const t=TYPES[o.type],w=o.rot%2?t.h:t.w,h=o.rot%2?t.w:t.h;return x>=o.x&&x<o.x+w&&y>=o.y&&y<o.y+h})}
 const SPEED=135;
 let tapTarget=null;const held=new Set();
 function dirFromVec(dx,dy){const deg=(Math.atan2(dx,-dy)*180/Math.PI+360)%360;return deg<45||deg>=315?'up':deg<135?'right':deg<225?'down':'left'}
